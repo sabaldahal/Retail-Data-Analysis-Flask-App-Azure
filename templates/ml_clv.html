@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}CLV Model{% endblock %}
+{% block content %}
+<div class="page" id="ml-clv-page">
+  <div class="page-header">
+    <div class="page-title">Customer Lifetime Value</div>
+    <div class="page-sub">Gradient Boosting Regressor — predicting long-term revenue potential per household</div>
+  </div>
+
+  <div id="ml-clv-loading" class="loading-note">Running CLV model and preparing insights...</div>
+  <div id="ml-clv-error" class="alert alert-danger hidden"></div>
+  <div id="ml-clv-content"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/ml_clv.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Basket Analysis{% endblock %}
+{% block content %}
+<div class="page" id="ml-basket-page">
+  <div class="page-header">
+    <div class="page-title">Basket Analysis</div>
+    <div class="page-sub">Association rules + Random Forest — surfacing product combinations and cross-sell opportunities</div>
+  </div>
+
+  <div id="ml-basket-loading" class="loading-note">Running basket analysis and building recommendations...</div>
+  <div id="ml-basket-error" class="alert alert-danger hidden"></div>
+  <div id="ml-basket-content"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/ml_basket.js') }}"></script>
+{% endblock %}

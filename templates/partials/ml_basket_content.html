@@ -1,0 +1,88 @@
+{% if result.warning %}
+<div class="alert alert-warning">
+  {{ result.warning }}
+  {% if result.available_rows is defined and result.required_rows is defined %}
+  Current rows: {{ result.available_rows }}. Minimum needed: {{ result.required_rows }}.
+  {% endif %}
+</div>
+{% else %}
+<div id="ml-basket-data"
+  data-top-items='{{ result.top_items|tojson }}'
+  data-rf-features='{{ (result.rf.top_features if result.rf and not result.rf.error else [])|tojson }}'
+  data-has-rf='{{ 1 if result.rf and not result.rf.error else 0 }}'>
+
+  <div class="card mb-20 border-left-accent3">
+    <div class="card-title">Model Overview</div>
+    <div class="model-overview-text">
+      <strong class="text-main">Association Rules (Apriori)</strong> find frequently co-purchased item pairs. Support = % of baskets containing the pair; Confidence = P(B|A); Lift &gt;1 means the pair occurs more than chance.<br>
+      <strong class="text-main">Random Forest</strong> then predicts the probability that a basket contains a target item given other items already present, enabling personalized recommendations.
+    </div>
+  </div>
+
+  <div class="grid-3 mb-20">
+    <div class="card stat">
+      <div class="stat-val stat-accent-blue">{{ result.total_baskets }}</div>
+      <div class="stat-lbl">Baskets Analyzed</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-val stat-accent-green">{{ result.rules|length }}</div>
+      <div class="stat-lbl">Association Rules</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-val stat-accent-orange">
+        {% if result.rf and not result.rf.error %}{{ result.rf.accuracy }}{% else %}—{% endif %}
+      </div>
+      <div class="stat-lbl">RF Accuracy</div>
+    </div>
+  </div>
+
+  <div class="grid-2 mb-20">
+    <div class="card">
+      <div class="card-title"><div class="dot dot-accent2"></div>Top 10 Purchased Items</div>
+      <canvas id="topItemsChart" height="220"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="dot dot-accent"></div>RF: Items Predicting Target</div>
+      {% if result.rf and not result.rf.error %}
+      <p class="tiny-muted mb-10">Predicting purchase of: <strong class="text-main">{{ result.rf.target }}</strong></p>
+      <canvas id="rfFeatChart" height="200"></canvas>
+      {% else %}
+      <p class="muted-small">Not enough data.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="dot dot-accent3"></div>Top Association Rules</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>If customer buys…</th><th>They also buy</th><th>Support</th><th>Confidence</th><th>Lift</th></tr>
+        </thead>
+        <tbody>
+          {% for r in result.rules %}
+          <tr>
+            <td class="text-accent2">{{ r.antecedent }}</td>
+            <td class="text-accent3">{{ r.consequent }}</td>
+            <td>{{ r.support }}</td>
+            <td>
+              <div class="inline-progress-wrap">
+                <div class="progress progress-w-60">
+                  <div class="progress-fill progress-fill-accent3 js-progress-fill" data-pct="{{ (r.confidence*100)|int }}"></div>
+                </div>
+                {{ (r.confidence*100)|int }}%
+              </div>
+            </td>
+            <td>
+              <span class="badge {{ 'badge-green' if r.lift >= 2 else ('badge-blue' if r.lift >= 1.2 else 'badge-gray') }}">
+                {{ r.lift }}×
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}

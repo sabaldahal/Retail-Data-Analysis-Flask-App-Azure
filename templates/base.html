@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Retail Analytics{% endblock %} · 84.51°</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+{% block head %}{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+{% if session.user %}
+<nav>
+  <div class="nav-brand">84.51°<span> Analytics</span></div>
+  <div class="nav-links">
+    <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint=='dashboard' }}">Dashboard</a>
+    <a href="{{ url_for('data_pull') }}" class="{{ 'active' if request.endpoint=='data_pull' }}">Data Pull</a>
+    <a href="{{ url_for('upload') }}" class="{{ 'active' if request.endpoint=='upload' }}">Upload</a>
+    <a href="{{ url_for('ml_clv') }}" class="{{ 'active' if request.endpoint=='ml_clv' }}">CLV</a>
+    <a href="{{ url_for('ml_basket') }}" class="{{ 'active' if request.endpoint=='ml_basket' }}">Basket</a>
+    <a href="{{ url_for('ml_churn') }}" class="{{ 'active' if request.endpoint=='ml_churn' }}">Churn</a>
+  </div>
+  <div class="nav-user">
+    <span>{{ session.user }}</span>
+    <a href="{{ url_for('logout') }}">Sign out</a>
+  </div>
+</nav>
+{% endif %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="flash-banner">
+  {% for m in messages %}{{ m }}{% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

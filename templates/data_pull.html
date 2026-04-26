@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Data Pull{% endblock %}
+{% block content %}
+<div class="page" id="data-pull-page" data-hshd-num="{{ hshd_num }}">
+  <div class="page-header">
+    <div class="page-title">Household Data Pull</div>
+    <div class="page-sub">Search transactions, household demographics, and product info by household number</div>
+  </div>
+
+  <!-- Search bar -->
+  <div class="card mb-20">
+    <form method="GET" class="data-pull-form" id="data-pull-form">
+      <div class="form-group data-pull-form-grow form-group-no-margin">
+        <label>Household Number (HSHD_NUM)</label>
+        <input type="number" id="data-pull-input" name="hshd_num" value="{{ hshd_num }}" min="1" max="9999" class="max-w-300">
+      </div>
+      <button type="submit" class="btn btn-primary">Search →</button>
+    </form>
+    <div class="quick-pick-wrap">
+      <span class="quick-pick-label">Quick pick:</span>
+      {% for n in [10, 991, 1786, 2291, 4989] %}
+      <a href="?hshd_num={{ n }}" class="badge {{ 'badge-blue' if n==hshd_num else 'badge-gray' }} js-quick-pick" data-hshd-num="{{ n }}">HH #{{ n }}</a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div id="data-pull-loading" class="loading-note">Loading household records...</div>
+  <div id="data-pull-error" class="alert alert-danger hidden"></div>
+  <div id="data-pull-content"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/data_pull.js') }}"></script>
+{% endblock %}

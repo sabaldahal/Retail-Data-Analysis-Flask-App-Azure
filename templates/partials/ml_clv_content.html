@@ -1,0 +1,80 @@
+{% if result.warning %}
+<div class="alert alert-warning">
+  {{ result.warning }}
+  {% if result.available_households is defined and result.required_households is defined %}
+  Current households: {{ result.available_households }}. Minimum needed: {{ result.required_households }}.
+  {% endif %}
+</div>
+{% else %}
+<div id="ml-clv-data"
+  data-feature-names='{{ result.feature_names|tojson }}'
+  data-importances='{{ result.importances|tojson }}'
+  data-score-distribution='{{ result.score_distribution|tojson }}'>
+
+  <div class="card mb-20 border-left-accent">
+    <div class="card-title">Model Overview</div>
+    <div class="model-overview-text">
+      <strong class="text-main">Gradient Boosting</strong> builds an ensemble of decision trees sequentially, where each tree corrects the residual errors of the previous. It excels on tabular data with nonlinear relationships.<br>
+      <strong class="text-main">CLV Proxy:</strong> Projected annual spend = (historical spend ÷ active weeks) × 52.<br>
+      Features used: Recency (weeks since last purchase), Frequency (unique baskets), Monetary (total spend), Income, Household Size, Children, Age Range.
+    </div>
+  </div>
+
+  <div class="grid-4 mb-20">
+    <div class="card stat">
+      <div class="stat-val stat-accent-blue">{{ result.r2 }}</div>
+      <div class="stat-lbl">R² Score</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-val stat-accent-green">${{ result.mae }}</div>
+      <div class="stat-lbl">MAE</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-val stat-accent-orange">{{ result.n_train }}</div>
+      <div class="stat-lbl">Train Samples</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-val stat-accent-purple">{{ result.n_test }}</div>
+      <div class="stat-lbl">Test Samples</div>
+    </div>
+  </div>
+
+  <div class="grid-2 mb-20">
+    <div class="card">
+      <div class="card-title"><div class="dot dot-accent"></div>Feature Importance</div>
+      <canvas id="featChart" height="200"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="dot dot-accent2"></div>Predicted CLV Distribution</div>
+      <canvas id="distChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="dot dot-accent3"></div>Top 10 High-Value Customers</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>#</th><th>HSHD_NUM</th><th>Predicted Annual CLV</th><th>Tier</th></tr></thead>
+        <tbody>
+          {% for c in result.top_customers %}
+          <tr>
+            <td class="text-muted">{{ loop.index }}</td>
+            <td><a href="/data-pull?hshd_num={{ c.hshd_num }}" class="link-accent2">{{ c.hshd_num }}</a></td>
+            <td class="text-accent3">${{ c.predicted_clv }}</td>
+            <td>
+              {% if c.predicted_clv >= 2000 %}
+              <span class="badge badge-green">Platinum</span>
+              {% elif c.predicted_clv >= 1000 %}
+              <span class="badge badge-blue">Gold</span>
+              {% else %}
+              <span class="badge badge-gray">Silver</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}

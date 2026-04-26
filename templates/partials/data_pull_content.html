@@ -1,0 +1,160 @@
+{% if rows %}
+<div class="card">
+  <div class="card-title card-title-between">
+    <span class="inline-title-wrap">
+      <div class="dot dot-accent2"></div>
+      Household #{{ hshd_num }} — Total: {{ total }} records
+    </span>
+    <span class="tiny-muted">
+      Showing entries {{ start_entry }}-{{ end_entry }} · Page {{ page }} of {{ total_pages }} · 50 rows per page
+
+      </span>
+    </span>
+  </div>
+    <div class="tiny-muted table-scroll-note">
+
+      Sorted by Hshd_num, Basket_num, Date, Product_num, Department, Commodity
+  </div>
+  <div class="table-scroll-note">
+    <span class="scroll-pill">Scrollable table</span>
+    <span class="tiny-muted">Drag horizontally or use shift + mouse wheel to view all columns.</span>
+  </div>
+
+  <div class="mb-14">
+    <div class="pagination-wrap" data-pagination-top>
+      {% if page > 1 %}
+      <a href="?hshd_num={{ hshd_num }}&page=1" class="badge badge-gray js-page-link" data-page="1">First</a>
+      <a href="?hshd_num={{ hshd_num }}&page={{ page - 1 }}" class="badge badge-gray js-page-link"
+        data-page="{{ page - 1 }}">Prev</a>
+      {% else %}
+      <span class="badge badge-gray">First</span>
+      <span class="badge badge-gray">Prev</span>
+      {% endif %}
+
+      {% set start_page = [1, page - 2] | max %}
+      {% set end_page = [total_pages, page + 2] | min %}
+      {% for p in range(start_page, end_page + 1) %}
+      <a href="?hshd_num={{ hshd_num }}&page={{ p }}"
+        class="badge {{ 'badge-blue' if p == page else 'badge-gray' }} js-page-link" data-page="{{ p }}">{{ p }}</a>
+      {% endfor %}
+
+      {% if page < total_pages %} <a href="?hshd_num={{ hshd_num }}&page={{ page + 1 }}"
+        class="badge badge-gray js-page-link" data-page="{{ page + 1 }}">Next</a>
+        <a href="?hshd_num={{ hshd_num }}&page={{ total_pages }}" class="badge badge-gray js-page-link"
+          data-page="{{ total_pages }}">Last</a>
+        {% else %}
+        <span class="badge badge-gray">Next</span>
+        <span class="badge badge-gray">Last</span>
+        {% endif %}
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="data-pull-table">
+      <thead>
+        <tr>
+          <th>HSHD#</th>
+          <th>Basket</th>
+          <th>Date</th>
+          <th>Product#</th>
+          <th>Dept</th>
+          <th>Commodity</th>
+          <th>Brand</th>
+          <th>Organic</th>
+          <th>Spend</th>
+          <th>Units</th>
+          <th>Region</th>
+          <th>Week</th>
+          <th>Year</th>
+          <th>Loyalty</th>
+          <th>Age</th>
+          <th>Marital</th>
+          <th>Income</th>
+          <th>Homeowner</th>
+          <th>HH Comp</th>
+          <th>HH Size</th>
+          <th>Children</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+        <tr>
+          <td>{{ r.HSHD_NUM }}</td>
+          <td>{{ r.BASKET_NUM }}</td>
+          <td>{{ r.PURCHASE_DATE }}</td>
+          <td>{{ r.PRODUCT_NUM }}</td>
+          <td>{{ r.DEPARTMENT or '—' }}</td>
+                    <td>{{ r.COMMODITY or '—' }}</td>
+                    <td>{{ r.BRAND_TY or '—' }}</td>
+          <td>
+            {% if r.NATURAL_ORGANIC_FLAG == 'Y' %}
+            <span class="badge badge-green">Y</span>
+            {% else %}
+            <span class="badge badge-gray">N</span>
+            {% endif %}
+          </td>
+          <td>${{ '%.2f'|format(r.SPEND or 0) }}</td>
+          <td>{{ r.UNITS or 0 }}</td>
+          <td><span class="badge badge-gray">{{ r.STORE_REGION or '—' }}</span></td>
+          <td>{{ r.WEEK_NUM or '—' }}</td>
+          <td>{{ r.YEAR or '—' }}</td>
+
+
+          <td>
+            {% if r.L == 'Y' %}
+            <span class="badge badge-green">Loyal</span>
+            {% else %}
+            <span class="badge badge-gray">—</span>
+            {% endif %}
+          </td>
+          <td>{{ r.AGE_RANGE or '—' }}</td>
+          <td>{{ r.MARITAL or '—' }}</td>
+          <td>{{ r.INCOME_RANGE or '—' }}</td>
+          <td>{{ r.HOMEOWNER or '—' }}</td>
+          <td>{{ r.HSHD_COMPOSITION or '—' }}</td>
+          <td>{{ r.HH_SIZE or '—' }}</td>
+          <td>
+            {% if r.CHILDREN == 'Y' %}
+            <span class="badge badge-blue">Yes</span>
+            {% else %}
+            <span class="badge badge-gray">No</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination-wrap mt-14" data-pagination-bottom>
+    {% if page > 1 %}
+    <a href="?hshd_num={{ hshd_num }}&page=1" class="badge badge-gray js-page-link" data-page="1">First</a>
+    <a href="?hshd_num={{ hshd_num }}&page={{ page - 1 }}" class="badge badge-gray js-page-link"
+      data-page="{{ page - 1 }}">Prev</a>
+    {% else %}
+    <span class="badge badge-gray">First</span>
+    <span class="badge badge-gray">Prev</span>
+    {% endif %}
+
+    {% set start_page = [1, page - 2] | max %}
+    {% set end_page = [total_pages, page + 2] | min %}
+    {% for p in range(start_page, end_page + 1) %}
+    <a href="?hshd_num={{ hshd_num }}&page={{ p }}"
+      class="badge {{ 'badge-blue' if p == page else 'badge-gray' }} js-page-link" data-page="{{ p }}">{{ p }}</a>
+    {% endfor %}
+
+    {% if page < total_pages %} <a href="?hshd_num={{ hshd_num }}&page={{ page + 1 }}"
+      class="badge badge-gray js-page-link" data-page="{{ page + 1 }}">Next</a>
+      <a href="?hshd_num={{ hshd_num }}&page={{ total_pages }}" class="badge badge-gray js-page-link"
+        data-page="{{ total_pages }}">Last</a>
+      {% else %}
+      <span class="badge badge-gray">Next</span>
+      <span class="badge badge-gray">Last</span>
+      {% endif %}
+  </div>
+</div>
+{% else %}
+<div class="card empty-state-card">
+  <div class="empty-state-symbol">∅</div>
+  <div class="empty-state-text">No records found for Household #{{ hshd_num }}</div>
+</div>
+{% endif %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page" id="dashboard-page">
+  <div class="page-header">
+    <div class="page-title">Retail Dashboard</div>
+    <div class="page-sub">Customer engagement and spending analytics across 400 households</div>
+  </div>
+
+  <div id="dashboard-loading" class="loading-note">Loading dashboard data...</div>
+  <div id="dashboard-error" class="alert alert-danger hidden"></div>
+
+  <!-- KPIs -->
+  <div id="kpi-grid" class="grid-4 mb-24">
+    <div class="card stat">
+      <div class="stat-val stat-accent-blue" id="kpi-hh">—</div>
+      <div class="stat-lbl">Households</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-val stat-accent-green" id="kpi-tx">—</div>
+      <div class="stat-lbl">Transaction Rows</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-val stat-accent-orange" id="kpi-spend">—</div>
+      <div class="stat-lbl">Total Spend ($)</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-val stat-accent-purple" id="kpi-avg">—</div>
+      <div class="stat-lbl">Avg Spend / Transaction</div>
+    </div>
+  </div>
+
+  <!-- Spend over time + Dept spend -->
+  <div class="grid-2 mb-24">
+    <div class="card">
+      <div class="card-title">
+        <div class="dot dot-accent2"></div>
+        Spend Over Time
+      </div>
+      <canvas id="spendTimeChart" height="180"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <div class="dot dot-accent"></div>
+        Spend by Department
+      </div>
+      <canvas id="deptChart" height="180"></canvas>
+    </div>
+  </div>
+
+  <!-- Income basket + Regional -->
+  <div class="grid-2 mb-24">
+    <div class="card">
+      <div class="card-title">
+        <div class="dot dot-accent3"></div>
+        Income Range vs Avg Basket Size
+      </div>
+      <canvas id="incomeChart" height="180"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <div class="dot dot-purple"></div>
+        Spend by Region
+      </div>
+      <canvas id="regionChart" height="180"></canvas>
+    </div>
+  </div>
+
+  <!-- Brand + Organic + HH Size -->
+  <div class="grid-3 mb-24">
+    <div class="card">
+      <div class="card-title">
+        <div class="dot dot-accent"></div>
+        Brand Preference
+      </div>
+      <canvas id="brandChart" height="180"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <div class="dot dot-accent3"></div>
+        Preference for Organic vs Conventional
+      </div>
+      <canvas id="organicChart" height="180"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <div class="dot dot-accent2"></div>
+        HH Size vs Avg Spend
+      </div>
+      <canvas id="hhsizeChart" height="180"></canvas>
+    </div>
+  </div>
+
+  <!-- Quick links to ML pages -->
+  <div class="grid-3">
+    <a href="{{ url_for('ml_clv') }}" class="card quick-link quick-link-accent">
+      <div class="quick-link-title">Customer Lifetime Value →</div>
+      <div class="quick-link-sub">Gradient Boosting model predicting long-term revenue potential per household.</div>
+    </a>
+    <a href="{{ url_for('ml_basket') }}" class="card quick-link quick-link-accent3">
+      <div class="quick-link-title">Basket Analysis →</div>
+      <div class="quick-link-sub">Association rules + Random Forest to surface cross-selling opportunities.</div>
+    </a>
+    <a href="{{ url_for('ml_churn') }}" class="card quick-link quick-link-red">
+      <div class="quick-link-title">Churn Prediction →</div>
+      <div class="quick-link-sub">Identify at-risk households before they disengage.</div>
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

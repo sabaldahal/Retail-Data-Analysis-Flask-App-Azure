@@ -1,0 +1,94 @@
+{% if result.warning %}
+<div class="alert alert-warning">
+  {{ result.warning }}
+  {% if result.available_households is defined and result.required_households is defined %}
+  Current households: {{ result.available_households }}. Minimum needed: {{ result.required_households }}.
+  {% endif %}
+</div>
+{% else %}
+<div id="ml-churn-data"
+  data-feature-importances='{{ result.feature_importances|tojson }}'
+  data-churn-income='{{ result.churn_by_income|tojson }}'>
+
+  <div class="card mb-20 border-left-red">
+    <div class="card-title">Model Overview</div>
+    <div class="model-overview-text">
+      <strong class="text-main">Churn Definition:</strong> A household is marked "churned" if they haven't purchased in the last 12 weeks.<br>
+      <strong class="text-main">Logistic Regression</strong> provides an interpretable baseline with coefficients indicating directionality.<br>
+      <strong class="text-main">Random Forest</strong> captures nonlinear interactions between RFM features and demographics for higher accuracy.
+    </div>
+  </div>
+
+  <div class="grid-4 mb-20">
+    <div class="card stat">
+      <div class="stat-val stat-red">{{ (result.churn_rate * 100)|round(1) }}%</div>
+      <div class="stat-lbl">Churn Rate</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-val stat-accent-orange">{{ result.churned }}</div>
+      <div class="stat-lbl">Churned HHs</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-val stat-accent-blue">
+        LR: {{ result.lr.accuracy }} / RF: {{ result.rf.accuracy }}
+      </div>
+      <div class="stat-lbl">Accuracy</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-val stat-accent-green">
+        LR: {{ result.lr.auc }} / RF: {{ result.rf.auc }}
+      </div>
+      <div class="stat-lbl">AUC-ROC</div>
+    </div>
+  </div>
+
+  <div class="grid-2 mb-20">
+    <div class="card">
+      <div class="card-title"><div class="dot dot-red"></div>Feature Importance (RF)</div>
+      <canvas id="featChart" height="200"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="dot dot-accent2"></div>Churn Rate by Income</div>
+      <canvas id="incomeChurnChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="dot dot-red"></div>Top 10 At-Risk Households</div>
+    <p class="tiny-muted mb-14">Prioritize these households for retention campaigns.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>HSHD_NUM</th><th>Churn Probability</th><th>Last Active (weeks ago)</th><th>Risk Level</th></tr>
+        </thead>
+        <tbody>
+          {% for c in result.at_risk %}
+          <tr>
+            <td class="text-muted">{{ loop.index }}</td>
+            <td><a href="/data-pull?hshd_num={{ c.hshd_num }}" class="link-accent2">{{ c.hshd_num }}</a></td>
+            <td>
+              <div class="inline-progress-wrap">
+                <div class="progress progress-w-80">
+                  <div class="progress-fill progress-fill-red js-progress-fill" data-pct="{{ (c.churn_probability*100)|int }}"></div>
+                </div>
+                {{ (c.churn_probability*100)|round(1) }}%
+              </div>
+            </td>
+            <td>{{ c.last_purchase_weeks_ago }} weeks</td>
+            <td>
+              {% if c.churn_probability >= 0.8 %}
+              <span class="badge badge-red">Critical</span>
+              {% elif c.churn_probability >= 0.6 %}
+              <span class="badge badge-amber">High</span>
+              {% else %}
+              <span class="badge badge-gray">Medium</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}

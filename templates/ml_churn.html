@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Churn Prediction{% endblock %}
+{% block content %}
+<div class="page" id="ml-churn-page">
+  <div class="page-header">
+    <div class="page-title">Churn Prediction</div>
+    <div class="page-sub">Logistic Regression + Random Forest — identifying at-risk households</div>
+  </div>
+
+  <div id="ml-churn-loading" class="loading-note">Training churn models and scoring households...</div>
+  <div id="ml-churn-error" class="alert alert-danger hidden"></div>
+  <div id="ml-churn-content"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/ml_churn.js') }}"></script>
+{% endblock %}

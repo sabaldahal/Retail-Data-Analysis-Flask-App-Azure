@@ -1,0 +1,7 @@
+flask>=3.0.0
+werkzeug>=3.0.0
+scikit-learn>=1.4.0
+numpy>=1.26.0
+pyodbc
+gunicorn
+python-dotenv

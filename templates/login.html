@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Sign In{% endblock %}
+{% block content %}
+<div class="auth-wrap auth-wrap-login">
+  <div class="auth-panel">
+    <div class="auth-header">
+      <div class="auth-logo auth-logo-spaced">
+        <span class="auth-logo-accent">84.51°</span>
+      </div>
+      <p class="auth-subtext">Retail Analytics Platform</p>
+    </div>
+    <div class="card">
+      <h2 class="auth-title">Sign in</h2>
+      <form method="POST">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" name="username" autocomplete="username" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn btn-primary auth-btn-full">
+          Sign in →
+        </button>
+      </form>
+      <p class="auth-switch-text">
+        No account? <a href="{{ url_for('register') }}" class="auth-link">Create one</a>
+      </p>
+    </div>
+    <p class="auth-demo-note">
+      Demo: username <code class="code-text">admin</code> / password <code class="code-text">admin123</code>
+    </p>
+  </div>
+</div>
+{% endblock %}
